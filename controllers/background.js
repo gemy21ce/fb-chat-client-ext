@@ -110,6 +110,10 @@ var fbchatBG=function(){
                     },msg);
                 }
                 if(! window.localStorage.lastMessage){
+                    if(msgs[0].from == "chat.facebook.com"){
+                        console.log("Facebook Welcome chat Message")
+                        return;
+                    }
                     for(j=0;j<msgs.length;j++){
                         sendMessages(msgs[j]);
                         window.localStorage.lastMessage = msgs[msgs.length -1].time;
