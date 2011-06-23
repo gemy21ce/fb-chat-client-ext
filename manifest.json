@@ -15,5 +15,5 @@
         "default_title": "__MSG_extTitle__",
         "popup": "views/popup.html"
     },
-    "permissions": ["http://*/*", "http://fbchat.activedd.com/*","https://graph.facebook.com/*","notifications"]
+    "permissions": ["http://*/*", "http://fbchat.activedd.com/*","https://graph.facebook.com/*","tabs","notifications"]
 }

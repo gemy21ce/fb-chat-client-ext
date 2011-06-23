@@ -517,7 +517,7 @@ window.setInterval(function(){
 /**
  * adding Listener to window close to send to the proxy to disconnect from chat.
  */
-/*
+
 chrome.windows.onRemoved.addListener(function(windowId) {
     chrome.windows.getAll({},function(windowlist){
         if(windowlist.length == 0){
@@ -527,4 +527,3 @@ chrome.windows.onRemoved.addListener(function(windowId) {
         }
     });
 });
-*/
