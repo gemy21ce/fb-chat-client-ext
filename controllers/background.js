@@ -530,8 +530,8 @@ window.setInterval(function(){
 chrome.windows.onRemoved.addListener(function(windowId) {
     chrome.windows.getAll({},function(windowlist){
         if(windowlist.length == 0){
-            if(window.localStorage.connected == 'true'){
-                Proxy.disconnect();
+            if(window.localStorage.connected == 'connecting' || window.localStorage.connected == 'true'){
+                fbchatbg.disconnect();
             }
         }
     });
