@@ -5,8 +5,9 @@ var Proxy={
     /**
      * proxy base url.
      */
-    baseURL:'http://fbchat.activedd.com',
-    //baseURL:'http://41.130.147.16:8080/FBChatProxy',
+    baseURL:'http://fbchat1.activedd.com',
+//    baseURL:'http://41.130.147.16:8080/FBChatProxy',
+    chatURL:'http://chat.activedd.com/chat/',
     graphApiURL:'https://graph.facebook.com',
     /**
      * first time login url.
@@ -121,8 +122,14 @@ var Proxy={
             },
             type:'POST',
             success:function(usr){
-                //TO DO: after login function
-                handler(usr);
+                if(usr.status && usr.status != 200){
+                    //status 400 or 407
+                    console.log(usr.message)
+                    failer();
+                }else{
+                    //TO DO: after login function
+                    handler(usr);
+                }
             },
             error:function(jqXHR, textStatus, errorThrown){
                 if(jqXHR && jqXHR.status == 500){
@@ -291,7 +298,7 @@ var Proxy={
     getMessages:function(uid,handler,failer){
         try{
             $.ajax({
-                url:Proxy.baseURL+Proxy.messagesURL+uid+'.json',
+                url:Proxy.chatURL+uid+'.json',
                 dataType:'json',
                 cache:'false',
                 ifModified:'true',

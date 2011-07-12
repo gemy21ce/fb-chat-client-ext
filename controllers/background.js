@@ -221,7 +221,9 @@ var fbchatBG=function(){
                     fbchatbg.errorDisconnecting();
                 });
             },function(){
-                fbchatbg.errorDisconnecting();
+                fbchatbg.disconnectError=window.setTimeout(function(){
+                    fbchatbg.connect(null);
+                }, 2 * 60 * 1000);
             });
         },
         getOnlineFriends:function(callback,handler){
