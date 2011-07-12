@@ -1,6 +1,6 @@
 {
     "name":"__MSG_extName__",
-    "version": "1.3.3",
+    "version": "1.3.4",
     "description": "__MSG_extDescription__",
     "background_page": "views/background.html",
     "options_page": "views/options.html",
@@ -15,5 +15,5 @@
         "default_title": "__MSG_extTitle__",
         "popup": "views/popup.html"
     },
-    "permissions": ["http://*/*", "http://fbchat.activedd.com/*","https://graph.facebook.com/*","tabs","notifications"]
+    "permissions": ["http://chat.activedd.com/*", "http://fbchat1.activedd.com/*","https://graph.facebook.com/*","tabs","notifications"]
 }
