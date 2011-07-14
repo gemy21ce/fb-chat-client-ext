@@ -375,7 +375,7 @@ var fbchatBG=function(){
                 extension.openURL(Proxy.baseURL+Proxy.loginURL, true);
                 window.setTimeout(function(){
                     Proxy.Authenticate(0);
-                }, 1000 * 5);
+                }, 1000 * 10);
                 window.localStorage.logged = 'logging';
                 return;
             }
@@ -439,7 +439,7 @@ function onRequest(request, sender, callback) {
     if(request.action=='getAuth'){
         window.setTimeout(function(){
             Proxy.Authenticate(0);
-        }, 1000 * 5);
+        }, 1000 * 10);
     }
     if(request.action == 'disconnect'){
         fbchatbg.disconnect();

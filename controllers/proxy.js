@@ -64,7 +64,7 @@ var Proxy={
             count=0;
         }
         count=parseInt(count);
-        if(count == 29){
+        if(count == 19){
             window.localStorage.logged=false;
             return;
         }
@@ -73,10 +73,10 @@ var Proxy={
                 url:Proxy.baseURL+Proxy.checkAuthURL,
                 dataType:'json',
                 success:function(res){
-                    if((! res || ! res.sessionkey) && count < 60){
+                    if((! res || ! res.sessionkey) && count < 19){
                         window.setTimeout(function(){
                             Proxy.Authenticate(count+1);
-                        }, 1000 * 2);
+                        }, 1000 * 4);
                     }else{
                         window.localStorage.sessionKey=res.sessionkey;
                         window.localStorage.logged=true;
@@ -92,17 +92,17 @@ var Proxy={
                     }
                 },
                 error:function(){
-                    if(count < 60){
+                    if(count < 19){
                         window.setTimeout(function(){
                             Proxy.Authenticate(count+1);
-                        }, 1000 * 2);
+                        }, 1000 * 4);
                     }
                 }
             });
         }catch (e){
             window.setTimeout(function(){
                 Proxy.Authenticate(count+1);
-            }, 1000 * 2);
+            }, 1000 * 4);
         }
         
     },
