@@ -11,7 +11,7 @@
  * 2- if not logged check every 5 seconds for logged in status.(including appear online).
  * 3- sends a message to proxy to send it to a user.
  */
-var VERSION_ID="1.3.4";
+var VERSION_ID="1.3.4.4";
 var fbchatBG=function(){
     var fbchatbg={
         friendsInterval:null,
@@ -32,7 +32,7 @@ var fbchatBG=function(){
                 window.localStorage.playSounds = true;
             }
             if( ! window.localStorage.autoConnect){
-                window.localStorage.autoConnect = true;
+                window.localStorage.autoConnect = false;
             }
         },
         getNavigatorLang:function(){
@@ -420,6 +420,7 @@ var fbchatBG=function(){
         if(VERSION_ID != systemVersion){
             fbchatbg.logout();
             window.localStorage.applicationVersion = VERSION_ID;
+            window.localStorage.autoConnect = false;
         }
     });
     
