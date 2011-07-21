@@ -5,9 +5,10 @@ var Proxy={
     /**
      * proxy base url.
      */
-    baseURL:'http://fbchat1.activedd.com',
-//    baseURL:'http://41.130.147.16:8080/FBChatProxy',
-    chatURL:'http://chat.activedd.com/',
+    //    baseURL:'http://fbchat1.activedd.com',
+    baseURL:'http://41.130.147.16:8080/FBChatProxy',
+    //chatURL:'http://chat.activedd.com/',
+    chatURL:'http://192.168.1.155/chat/',
     graphApiURL:'https://graph.facebook.com',
     /**
      * first time login url.
@@ -20,11 +21,13 @@ var Proxy={
     /**
      * connect and go online.
      */
-    connectURL:'/newconnect/connect.htm',
+    // connectURL:'/newconnect/connect.htm',
+    connectURL:'/connectv2/connect.htm',
     /**
      * disconnects from facebook and go offline.
      */
-    disconnectURL:'/newconnect/disconnect.htm',
+    //disconnectURL:'/newconnect/disconnect.htm',
+    disconnectURL:'/connectv2/disconnect.htm',
     /**
      * the json file of user recent chat url.
      */
@@ -32,11 +35,13 @@ var Proxy={
     /**
      * sending a chat message url, param:to( the reciever id), msg( the message),from (user id).
      */
-    sendMessageURL:'/newmessaging/send.htm',
+    //sendMessageURL:'/newmessaging/send.htm',
+    sendMessageURL:'/messagingv2/send.htm',
     /**
      * update the list of online users, param: uid(user id).
      */
-    onlineUsersURL:'/newmessaging/onlinefriends.htm',
+    //    onlineUsersURL:'/newmessaging/onlinefriends.htm',
+    onlineUsersURL:'/messagingv2/onlinefriends.htm',
     /**
      * get a list of friends, param: uid(user id).
      */
@@ -122,13 +127,19 @@ var Proxy={
             },
             type:'POST',
             success:function(usr){
-                if(usr.status && usr.status != 200){
-                    //status 400 or 407
-                    console.log(usr.message)
+                if(!usr){
                     failer();
                 }else{
-                    //TO DO: after login function
-                    handler(usr);
+                    console.log("user coming from connecting = >" + JSON.stringify(usr))
+                    if(usr.status && usr.status != 200){
+                        //status 400 or 407
+                        console.log(usr.message)
+                        failer();
+                    }else{
+                        //TO DO: after login function
+                        window.localStorage.fileName=usr.file;
+                        handler(usr);
+                    }
                 }
             },
             error:function(jqXHR, textStatus, errorThrown){

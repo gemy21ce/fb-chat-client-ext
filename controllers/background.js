@@ -80,8 +80,8 @@ var fbchatBG=function(){
             //send to the proxy to check for messages.
             //if message is old discard it, else check for open popup if there is one send to it to show the new message.
             //else send to show a notification.
-            var user=JSON.parse(window.localStorage.user);
-            Proxy.getMessages(user.uid, function(msgs){
+            var user=window.localStorage.fileName;
+            Proxy.getMessages(user, function(msgs){
                 if(! msgs){
                     return;
                 }
