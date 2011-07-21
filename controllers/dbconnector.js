@@ -61,7 +61,8 @@ var fbchatDB=function(){
         insertFriend:function(friend,handler,pathob){
             fbchatdb.db.transaction(function(tx) {
                 tx.executeSql("INSERT into friends (uid,name,pic_square,online) VALUES (?,?,?,?);",
-                    [friend.uid,friend.name,friend.pic_square,"false"],
+                    [friend.id,friend.name,"https://graph.facebook.com/"+friend.id+"/picture?access_token="+window.localStorage.sessionKey,"false"],
+//                    [friend.uid,friend.name,friend.pic_square,"false"],
                     handler?handler(pathob.list):null,
                     fbchatdb.onError);
             });

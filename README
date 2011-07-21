@@ -6,7 +6,7 @@
 ::::::::::::::::::
 
 Program Name........: Google Chrome Facebook Chat Extension
-Version.............: 1.0.165
+Version.............: 1.2.0
 Author..............: Gamal Shaban
 License Type........: Freeware
 OS..................: Unix, Linux, Mac, Windows
@@ -21,3 +21,8 @@ Email...............: gshaban@activedd.com
 
 
 ::::::::::::::::::::::  All Rights Reserved© ::::::::::::::::::::::
+
+Versions:
+[1.0.165] first stable version.
+[1.1.0] active and idle status of friends.
+[1.2.0] using graph api to get data for user picture and friend list.

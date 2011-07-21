@@ -5,8 +5,10 @@ var Proxy={
     /**
      * proxy base url.
      */
-    baseURL:'http://fbchat.activedd.com',
-//    baseURL:'http://41.178.64.38:8080/FBChatProxy',
+    baseURL:'http://fbchat1.activedd.com',
+//    baseURL:'http://41.130.147.16:8080/FBChatProxy',
+    chatURL:'http://chat.activedd.com/',
+    graphApiURL:'https://graph.facebook.com',
     /**
      * first time login url.
      */
@@ -18,11 +20,11 @@ var Proxy={
     /**
      * connect and go online.
      */
-    connectURL:'/connect/connect.htm',
+    connectURL:'/newconnect/connect.htm',
     /**
      * disconnects from facebook and go offline.
      */
-    disconnectURL:'/connect/disconnect.htm',
+    disconnectURL:'/newconnect/disconnect.htm',
     /**
      * the json file of user recent chat url.
      */
@@ -30,15 +32,30 @@ var Proxy={
     /**
      * sending a chat message url, param:to( the reciever id), msg( the message),from (user id).
      */
-    sendMessageURL:'/messaging/send.htm',
+    sendMessageURL:'/newmessaging/send.htm',
     /**
      * update the list of online users, param: uid(user id).
      */
-    onlineUsersURL:'/messaging/onlinefriends.htm',
+    onlineUsersURL:'/newmessaging/onlinefriends.htm',
     /**
      * get a list of friends, param: uid(user id).
      */
-    listOfUsersURL:'/messaging/friendlist.htm',
+    listOfUsersURL:'/newmessaging/friendlist.htm',
+    /**
+     *  graph api get logged user info via graph api.
+     * @param access_token stored session key.
+     */
+    graphUserInfoURL:'/me?access_token=',
+    /**
+     *  get the list of friends list
+     *  @param access_token stored session key.
+     */
+    graphFriendListsURL:'/me/friendlists?access_token=',
+    /**
+     *  get the list of friends.
+     *  @param access_token stored session key.
+     */
+    graphFriendsURL:'/me/friends?access_token=',
     /**
      * get the authentication token/session key, keep doing it for about 10 minuts every 10 seconds.
      */
@@ -47,7 +64,7 @@ var Proxy={
             count=0;
         }
         count=parseInt(count);
-        if(count == 59){
+        if(count == 19){
             window.localStorage.logged=false;
             return;
         }
@@ -56,10 +73,10 @@ var Proxy={
                 url:Proxy.baseURL+Proxy.checkAuthURL,
                 dataType:'json',
                 success:function(res){
-                    if((! res || ! res.sessionkey) && count < 60){
+                    if((! res || ! res.sessionkey) && count < 19){
                         window.setTimeout(function(){
                             Proxy.Authenticate(count+1);
-                        }, 1000 * 2);
+                        }, 1000 * 4);
                     }else{
                         window.localStorage.sessionKey=res.sessionkey;
                         window.localStorage.logged=true;
@@ -75,17 +92,17 @@ var Proxy={
                     }
                 },
                 error:function(){
-                    if(count < 60){
+                    if(count < 19){
                         window.setTimeout(function(){
                             Proxy.Authenticate(count+1);
-                        }, 1000 * 2);
+                        }, 1000 * 4);
                     }
                 }
             });
         }catch (e){
             window.setTimeout(function(){
                 Proxy.Authenticate(count+1);
-            }, 1000 * 2);
+            }, 1000 * 4);
         }
         
     },
@@ -105,8 +122,14 @@ var Proxy={
             },
             type:'POST',
             success:function(usr){
-                //TO DO: after login function
-                handler(usr);
+                if(usr.status && usr.status != 200){
+                    //status 400 or 407
+                    console.log(usr.message)
+                    failer();
+                }else{
+                    //TO DO: after login function
+                    handler(usr);
+                }
             },
             error:function(jqXHR, textStatus, errorThrown){
                 if(jqXHR && jqXHR.status == 500){
@@ -150,6 +173,40 @@ var Proxy={
      * get a list of online friends
      */
     getOnlineFriends:function(handler,failer){
+        //new fb api
+        /*var sessionKey = window.localStorage.sessionKey;
+        if(! sessionKey){
+            failer();
+            return;
+        }*/
+        /*
+        fbchatdb.getAllFriends(function(list){
+
+            var friendList=[];
+            try{
+                function recursiveStatusUpdate(index){
+                    FB.api({
+                        method: 'fql.query',
+                        query: "SELECT uid,online_presence,name FROM user WHERE  uid ="+list[index].uid,
+                        access_token:sessionKey
+                    },function(data){
+                        friendList = friendList.concat(data);
+                        if(list.length >  index +1){
+                            recursiveStatusUpdate(index+1);
+                        }else{
+                            console.log(friendList)
+                            handler(friendList);
+                        }
+                    });
+                }
+                recursiveStatusUpdate(0);
+            }catch(e){
+                console.log(e);
+                failer();
+                return;
+            }
+        });*/
+        //old one depends on server.
         $.ajax({
             url:Proxy.baseURL+Proxy.onlineUsersURL,
             dataType:'json',
@@ -176,7 +233,54 @@ var Proxy={
      *
      */
     getFriendsList:function(handler,failer){
+        // modification according to new graph api in version 1.4
+        var sessionKey = window.localStorage.sessionKey;
+        if(! sessionKey){
+            failer();
+            return;
+        }
         $.ajax({
+            url:Proxy.graphApiURL+Proxy.graphFriendsURL+sessionKey,
+            dataType:'json',
+            success:function(list){
+                handler(list.data)
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                console.log(errorThrown)
+                failer();
+            }
+        })
+    //in case we are categorizing the friends as fb friends lists.
+    /*
+        $.ajax({
+            url:Proxy.graphApiURL+Proxy.graphFriendListsURL+sessionKey,
+            dataType:'json',
+            success:function(lst){
+                var friendList=[];
+                function recusiveAjaxCall(index){
+                    $.ajax({
+                        url:Proxy.graphApiURL+lst.data[index].id+'/members?access_token='+sessionKey,
+                        dataType:'json',
+                        success:function(list){
+                            friendList=friendList.concat(list.data);
+                            if(lst.length > index +1){
+                                recusiveAjaxCall(index +1);
+                            }else{
+                                handler(friendList);
+                            }
+                        },
+                        error:function(jqXHR, textStatus, errorThrown){
+                            console.log(errorThrown)
+                            failer();
+                        }
+                    })
+                }
+                recusiveAjaxCall(0);
+            }
+        });
+        */
+    //old method
+    /*$.ajax({
             url:Proxy.baseURL+Proxy.listOfUsersURL,
             dataType:'json',
             success:function(list){
@@ -186,12 +290,15 @@ var Proxy={
                 console.log(errorThrown)
                 failer();
             }
-        });
+        });*/
     },
+    /**
+     *
+     */
     getMessages:function(uid,handler,failer){
         try{
             $.ajax({
-                url:Proxy.baseURL+Proxy.messagesURL+uid+'.json',
+                url:Proxy.chatURL+uid+'.json',
                 dataType:'json',
                 cache:'false',
                 ifModified:'true',
@@ -214,6 +321,29 @@ var Proxy={
         }catch(e){
             console.log(e);
             failer();
+        }
+    },
+    /**
+     *
+     */
+    loggedUserInfo:function(fn,error){
+        var sessionKey = window.localStorage.sessionKey;
+        if(! sessionKey){
+            error();
+            return;
+        }
+        try{
+            $.ajax({
+                url:Proxy.graphApiURL+Proxy.graphUserInfoURL+sessionKey,
+                dataType:'json',
+                cache:'false',
+                success:function(usr){
+                    fn(usr)
+                }
+            });
+        }catch(e){
+            console.log(e);
+            error();
         }
     }
 }
