@@ -147,9 +147,9 @@ var fbchatBG=function(){
         updateFriendsStatus:function(handler){
             console.log('updateing on:'+(new Date()).getMinutes())
             Proxy.getOnlineFriends(function(list){
-                if(! list || (list.length != 0 && list[0].error)){
+                if(! list || (list.length != 0 && list[0].status==400)){
                     fbchatbg.errorDisconnecting();
-                    console.log(list[0].error);
+                    console.log("here");
                     fbchatbg.connect();
                     return;
                 }
